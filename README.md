@@ -9,7 +9,7 @@ A tool that analyses team and player stats from Europe's top 5 leagues (2025-26 
 - Explains defensive problems using shots faced and goalkeeper save %
 
 ## Example finding
-Based on the 2025-2026 season it tells us that Manchester United were a very good attacking and a average defensive team.
+Manchester United score 1.74 goals per match (83rd percentile out of 96 teams) but concede 1.32 (64th percentile). The tool shows their defence is not the problem in front of goal: they allow only 3.6 shots on target per match (82nd percentile). The leak is at the last step, where their goalkeepers save 66% of shots faced, lower than about 80% of teams.
 
 ## Data
 Player stats from this Kaggle dataset: https://www.kaggle.com/datasets/hubertsidorowicz/football-players-stats-2025-2026
