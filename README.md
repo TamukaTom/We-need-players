@@ -9,10 +9,10 @@ A tool that analyses team and player stats from Europe's top 5 leagues (2025-26 
 - Explains defensive problems using shots faced and goalkeeper save %
 
 ## Example finding
-[One sentence from your own analysis, e.g. what the tool says about a team you follow.]
+Based on the 2025-2026 season it tells us that Manchester United were a very good attacking and a average defensive team.
 
 ## Data
-Player stats from this Kaggle dataset: [paste the Kaggle link].
+Player stats from this Kaggle dataset: https://www.kaggle.com/datasets/hubertsidorowicz/football-players-stats-2025-2026
 The CSV is not included in this repository. Download it from Kaggle and place it in the project folder as `players_data-2025_2026.csv`.
 
 ## How to run
