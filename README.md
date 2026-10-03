@@ -10,9 +10,11 @@ A notebook-based tool that analyses team and player stats from Europe's top 5 le
 - **Defence diagnosis:** compares shots on target faced with goalkeeper save %, to show whether a weakness is in front of the keeper or in goal
 - Scores every player for their role and lists low scorers on a team
 - **Recommender:** finds the team's weakest regular starter in the role that needs help, then suggests better-scoring players, with filters for age, minutes and how big a jump is realistic
+- **Midfield diagnosis:** compares ball winning (tackles won and interceptions) with assists, but only flags a problem when the team's defence or attack is not already strong, so a team that defends well without the ball is not blamed for few tackles
 
 ## Example finding
 Manchester United score in the top quarter of the 96 teams for goals per match (83rd percentile) and test the keeper more than almost everyone (91st percentile for shots on target), but convert slightly fewer of those shots than an average team. Their defence limits shots on target (82nd percentile) but their goalkeepers save fewer shots than about 80% of teams, so the tool points to goalkeeping and suggests keepers who score higher than their current starter.
+![Example team report](images/screenshot1.png)
 
 ## Data
 Player stats from this Kaggle dataset: [https://www.kaggle.com/datasets/hubertsidorowicz/football-players-stats-2025-2026].
@@ -31,6 +33,7 @@ The CSV is not included in this repository. Download it from Kaggle and place it
 - The labels and recommendations use fixed cut-offs, so teams near a cut-off can land on either side.
 - Recommendations ignore price, contract, wages, injuries and league strength. They are a shortlist to research, not transfer advice.
 - It covers one season of data.
+- Club level (goal difference per match) is only a rough stand-in for whether a move is realistic. Player scores are also not adjusted for the quality of the team around them or the strength of the league.
 
 ## Planned
 - Add a midfield diagnosis
