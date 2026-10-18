@@ -3,3 +3,5 @@
 __pycache__/
 players_data-2025_2026.csv
 *.zip
+db.sqlite3
+*.sqlite3
