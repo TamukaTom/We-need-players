@@ -9,7 +9,7 @@ class Team(models.Model):
     attack_label = models.CharField(max_length=40)
     defence_label = models.CharField(max_length=40)
     midfield_label = models.CharField(max_length=40)
-    badge_url = models.URLField(blank=True)          # <-- NEW LINE (Team)
+    badge_url = models.URLField(blank=True)
     metrics = models.JSONField(default=dict)
 
     class Meta:
@@ -21,6 +21,11 @@ class Team(models.Model):
     def __str__(self):
         return f"{self.name} ({self.league})"
 
+    @property
+    def league_display(self):
+        # "eng Premier League" -> "Premier League"
+        return self.league.split(" ", 1)[-1]
+
 
 class Player(models.Model):
     name = models.CharField(max_length=100)
@@ -29,7 +34,7 @@ class Player(models.Model):
     age = models.PositiveSmallIntegerField(null=True, blank=True)
     minutes = models.PositiveIntegerField()
     score = models.FloatField(null=True, blank=True)
-    photo_url = models.URLField(blank=True)          # <-- NEW LINE (Player)
+    photo_url = models.URLField(blank=True)
     stats = models.JSONField(default=dict)
 
     class Meta:

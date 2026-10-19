@@ -1,0 +1,22 @@
+{% extends "analytics/base.html" %}
+
+{% block content %}
+<form method="get">
+  <input type="text" name="q" value="{{ query }}" placeholder="Search for a team">
+  <button type="submit">Search</button>
+</form>
+
+{% regroup teams by league_display as league_list %}
+{% for group in league_list %}
+  <h2>{{ group.grouper }}</h2>
+  <ul>
+    {% for team in group.list %}
+      <li><a href="{% url 'team_report' team.pk %}">{{ team.name }}</a>
+        <span class="muted">attack: {{ team.attack_label }} | defence: {{ team.defence_label }} | midfield: {{ team.midfield_label }}</span>
+      </li>
+    {% endfor %}
+  </ul>
+{% empty %}
+  <p>No teams match "{{ query }}".</p>
+{% endfor %}
+{% endblock %}
