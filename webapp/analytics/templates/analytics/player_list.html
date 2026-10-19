@@ -1,0 +1,60 @@
+{% extends "analytics/base.html" %}
+
+{% block title %}Players - Football Team Analytics{% endblock %}
+
+{% block content %}
+<h1>Players</h1>
+<form method="get" class="filters">
+  <input type="text" name="q" value="{{ query }}" placeholder="Search for a player">
+  <label>Role
+    <select name="role">
+      <option value="">All</option>
+      {% for r in roles %}<option value="{{ r }}" {% if r == role %}selected{% endif %}>{{ r }}</option>{% endfor %}
+    </select>
+  </label>
+  <label>League
+    <select name="league">
+      <option value="">All</option>
+      {% for lg in leagues %}<option value="{{ lg.league }}" {% if lg.league == league %}selected{% endif %}>{{ lg.display }}</option>{% endfor %}
+    </select>
+  </label>
+  <label>Sort by
+    <select name="sort">
+      <option value="score" {% if sort == "score" %}selected{% endif %}>Score</option>
+      <option value="minutes" {% if sort == "minutes" %}selected{% endif %}>Minutes</option>
+      <option value="age" {% if sort == "age" %}selected{% endif %}>Age (youngest first)</option>
+      <option value="name" {% if sort == "name" %}selected{% endif %}>Name</option>
+    </select>
+  </label>
+  <button type="submit">Search</button>
+  <a href="{% url 'player_list' %}">Clear</a>
+</form>
+
+<p class="muted">{{ total }} players. Page {{ page.number }} of {{ page.paginator.num_pages }}.</p>
+
+<table>
+  <thead>
+    <tr><th>Player</th><th>Club</th><th>Role</th><th>Age</th><th>Minutes</th><th>Score</th></tr>
+  </thead>
+  <tbody>
+    {% for p in page %}
+    <tr>
+      <td><a href="{% url 'player_detail' p.pk %}">{{ p.name }}</a></td>
+      <td><a href="{% url 'team_report' p.team.pk %}">{{ p.team.name }}</a></td>
+      <td>{{ p.role }}</td>
+      <td>{{ p.age|default:"-" }}</td>
+      <td>{{ p.minutes }}</td>
+      <td>{{ p.score|floatformat:1 }}</td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="6">No players match these filters.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<p>
+  {% if page.has_previous %}<a href="?{{ base_qs }}&page={{ page.previous_page_number }}">&larr; Previous</a>{% endif %}
+  {% if page.has_next %}<a href="?{{ base_qs }}&page={{ page.next_page_number }}">Next &rarr;</a>{% endif %}
+</p>
+<p class="muted">Only players with 900+ minutes are included. Search is not accent-insensitive: "Dembele" will not find "Dembélé", so search for part of the name with the accent, such as "Dembél".</p>
+{% endblock %}

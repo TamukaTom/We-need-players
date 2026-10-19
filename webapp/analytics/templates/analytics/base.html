@@ -29,12 +29,13 @@
     .grid, .summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px; }
     .league-card { display: block; padding: 1rem; border: 1px solid #ddd; border-radius: 6px; text-decoration: none; color: #1f3a5f; }
     .league-card:hover { background: #f5f7fa; }
+    .filters input[type="text"] { width: 14rem; }
   </style>
 </head>
 <body>
   <header>
     <a href="{% url 'team_list' %}">Football Team Analytics</a>
-    <nav><a href="{% url 'team_list' %}">Teams</a> <a href="{% url 'league_list' %}">Leagues</a></nav>
+    <nav><a href="{% url 'team_list' %}">Teams</a> <a href="{% url 'league_list' %}">Leagues</a> <a href="{% url 'player_list' %}">Players</a></nav>
   </header>
   {% block content %}{% endblock %}
 </body>

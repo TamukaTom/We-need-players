@@ -60,3 +60,5 @@ MIDFIELD_LABEL_TO_ROLES = {
     "creation": ["Attacking Midfielder"],
     "both": ["Midfielder", "Attacking Midfielder"],
 }
+
+STAT_LABELS["FoulsDrawn"] = "Fouls drawn"

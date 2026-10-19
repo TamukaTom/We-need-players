@@ -1,0 +1,53 @@
+{% extends "analytics/base.html" %}
+
+{% block title %}{{ player.name }} - Football Team Analytics{% endblock %}
+
+{% block content %}
+<p><a href="{% url 'player_list' %}">&larr; All players</a></p>
+<h1>{{ player.name }}</h1>
+<p class="muted"><a href="{% url 'team_report' player.team.pk %}">{{ player.team.name }}</a> | {{ player.role }} | Age {{ player.age|default:"-" }} | {{ player.minutes }} minutes</p>
+
+<div class="card">
+  <p><strong>Score: {{ player.score|floatformat:1 }} / 100</strong></p>
+  {% if keeper_rows %}
+    <p class="muted">The average of this keeper's save percentage, goals against per 90 and clean sheet percentage, each ranked among goalkeepers.</p>
+  {% else %}
+    <p class="muted">The average of this player's percentiles among {{ player.role|lower }}s for: {{ counted_labels|join:", " }}.</p>
+  {% endif %}
+</div>
+
+{% if keeper_rows %}
+<h2>Goalkeeping</h2>
+<table>
+  <thead><tr><th>Stat</th><th>Value</th></tr></thead>
+  <tbody>
+    {% for label, value, suffix in keeper_rows %}
+    <tr>
+      <td>{{ label }}</td>
+      <td>{% if value is not None %}{{ value|floatformat:1 }}{{ suffix }}{% else %}-{% endif %}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<h2>Per 90 minutes</h2>
+<table>
+  <thead>
+    <tr><th>Stat</th><th>Per 90</th><th>Rank among {{ player.role|lower }}s</th><th>Percentile</th><th></th></tr>
+  </thead>
+  <tbody>
+    {% for r in rows %}
+    <tr>
+      <td>{{ r.name }}</td>
+      <td>{{ r.value|floatformat:2 }}</td>
+      <td><div class="bar"><div class="fill {{ r.tag }}" style="width: {{ r.width }}%"></div></div></td>
+      <td>{{ r.percentile|floatformat:0 }} <span class="tag {{ r.tag }}">{{ r.tag }}</span></td>
+      <td class="muted">{% if r.counted %}counts toward score{% endif %}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+<p class="muted">Percentile: 100 is the best among players in the same role (for fouls committed and offsides, fewer is better).
+Stats that do not count toward the score are shown for context only.</p>
+{% endif %}
+{% endblock %}

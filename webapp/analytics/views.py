@@ -1,10 +1,12 @@
-from django.shortcuts import get_object_or_404, render
 from collections import Counter
 
+from django.core.paginator import Paginator
 from django.http import Http404
+from django.shortcuts import get_object_or_404, render
 from django.utils.text import slugify
+
 from . import config, recommend, rules
-from .models import Team
+from .models import Player, Team
 
 
 def _int_param(request, name, default):
@@ -146,3 +148,95 @@ def league_detail(request, slug):
         "base_qs": keep.urlencode(),
     }
     return render(request, "analytics/league_detail.html", context)
+
+ROLE_ORDER = ["Goalkeeper", "Defender", "Midfielder", "Attacking Midfielder", "Forward"]
+
+PLAYER_SORTS = {
+    "score": "-score",
+    "minutes": "-minutes",
+    "age": "age",
+    "name": "name",
+}
+
+
+def player_list(request):
+    query = request.GET.get("q", "").strip()
+    role = request.GET.get("role", "")
+    league = request.GET.get("league", "")
+    sort = request.GET.get("sort", "score")
+    if sort not in PLAYER_SORTS:
+        sort = "score"
+
+    players = Player.objects.select_related("team")
+    if query:
+        players = players.filter(name__icontains=query)
+    if role in ROLE_ORDER:
+        players = players.filter(role=role)
+    else:
+        role = ""
+    if league:
+        players = players.filter(team__league=league)
+    players = players.order_by(PLAYER_SORTS[sort], "name")
+
+    page = Paginator(players, 25).get_page(request.GET.get("page"))
+
+    keep = request.GET.copy()
+    keep.pop("page", None)
+
+    context = {
+        "page": page,
+        "query": query,
+        "role": role,
+        "league": league,
+        "sort": sort,
+        "roles": ROLE_ORDER,
+        "leagues": _leagues(),
+        "total": page.paginator.count,
+        "base_qs": keep.urlencode(),
+    }
+    return render(request, "analytics/player_list.html", context)
+
+
+def player_detail(request, pk):
+    player = get_object_or_404(Player.objects.select_related("team"), pk=pk)
+    stats = player.stats
+    counted = config.SCORE_STATS.get(player.role, [])
+
+    rows = []
+    if player.role != "Goalkeeper":
+        for name in config.PLAYER_STATS.values():
+            value = stats.get(name + "_per90")
+            pct = stats.get(name + "_per90_percentile")
+            if value is None or pct is None:
+                continue
+            if pct >= config.STRONG:
+                tag = "strength"
+            elif pct <= config.WEAK:
+                tag = "weakness"
+            else:
+                tag = "average"
+            rows.append({
+                "name": config.STAT_LABELS.get(name, name),
+                "value": value,
+                "percentile": pct,
+                "width": round(pct),
+                "tag": tag,
+                "counted": name in counted,
+            })
+        rows.sort(key=lambda r: r["percentile"], reverse=True)
+
+    keeper_rows = []
+    if player.role == "Goalkeeper":
+        keeper_rows = [
+            ("Save percentage", stats.get("Save%"), "%"),
+            ("Goals against per 90", stats.get("GA90"), ""),
+            ("Clean sheets", stats.get("CS%"), "%"),
+        ]
+
+    context = {
+        "player": player,
+        "rows": rows,
+        "keeper_rows": keeper_rows,
+        "counted_labels": [config.STAT_LABELS.get(n, n) for n in counted],
+    }
+    return render(request, "analytics/player_detail.html", context)
