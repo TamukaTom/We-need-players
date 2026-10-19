@@ -5,7 +5,7 @@
 {% block content %}
 <p><a href="{% url 'team_list' %}">&larr; All teams</a></p>
 <h1>{{ team.name }}</h1>
-<p class="muted">{{ team.league_display }} | Club level {{ club_level }} / 100 (based on goal difference)</p>
+<p class="muted"><a href="{% url 'league_detail' team.league_slug %}">{{ team.league_display }}</a> | Club level {{ club_level }} / 100 (based on goal difference)</p>
 
 <h2>Diagnosis</h2>
 <div class="card">
@@ -36,38 +36,4 @@ Tackles won and interceptions reflect playing style as much as quality, so a low
 <h2>Suggested players</h2>
 <form method="get" class="filters">
   <label>Max age <input type="number" name="max_age" value="{{ max_age }}" min="16" max="45"></label>
-  <label>Max score gap <input type="number" name="max_gap" value="{{ max_gap }}" min="1" max="100"></label>
-  <label>Max club-level gap <input type="number" name="max_club_gap" value="{{ max_club_gap }}" min="0" max="100"></label>
-  <button type="submit">Update</button>
-</form>
-
-{% for s in suggestions %}
-  <h3>{{ s.role }}s</h3>
-  <p class="muted">Weakest regular {{ s.role|lower }}: {{ s.weakest.name }} (score {{ s.weakest.score|floatformat:1 }}, {{ s.weakest.minutes }} minutes)</p>
-  {% if s.candidates %}
-  <table>
-    <thead>
-      <tr><th>Player</th><th>Club</th><th>Age</th><th>Minutes</th><th>Score</th><th>Better by</th><th>Club level</th></tr>
-    </thead>
-    <tbody>
-      {% for p in s.candidates %}
-      <tr>
-        <td>{{ p.name }}</td>
-        <td><a href="{% url 'team_report' p.team.pk %}">{{ p.team.name }}</a></td>
-        <td>{{ p.age }}</td>
-        <td>{{ p.minutes }}</td>
-        <td>{{ p.score|floatformat:1 }}</td>
-        <td>+{{ p.better_by|floatformat:1 }}</td>
-        <td>{{ p.team.strength|floatformat:0 }}</td>
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table>
-  {% else %}
-  <p>No players match these filters. Try raising the age, score gap or club-level gap.</p>
-  {% endif %}
-{% empty %}
-  <p>No recommendation needed. None of the diagnosis labels point to a problem area.</p>
-{% endfor %}
-<p class="muted">Suggestions are ranked by this tool's player scores only. They ignore price, contract, wages, injuries and league strength, so treat them as a shortlist to research.</p>
-{% endblock %}
+  <label>Max score gap <input type="number" name="max_gap" value="{{ max_gap }}" min="1"

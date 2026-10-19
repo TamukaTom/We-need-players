@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils.text import slugify
 
 
 class Team(models.Model):
@@ -25,6 +26,11 @@ class Team(models.Model):
     def league_display(self):
         # "eng Premier League" -> "Premier League"
         return self.league.split(" ", 1)[-1]
+
+    @property
+    def league_slug(self):
+        # "Premier League" -> "premier-league", used in web addresses
+        return slugify(self.league_display)
 
 
 class Player(models.Model):

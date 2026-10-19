@@ -1,0 +1,71 @@
+{% extends "analytics/base.html" %}
+
+{% block title %}{{ league.display }} - Football Team Analytics{% endblock %}
+
+{% block content %}
+<p><a href="{% url 'league_list' %}">&larr; All leagues</a></p>
+<h1>{{ league.display }}</h1>
+<p class="muted">{{ total }} teams. Showing {{ teams|length }}.</p>
+
+<h2>How common is each label?</h2>
+<div class="summary">
+  {% for area, counts in summary %}
+  <div class="card">
+    <strong>{{ area }}</strong>
+    <ul>
+      {% for label, n in counts %}<li>{{ label }}: {{ n }}</li>{% endfor %}
+    </ul>
+  </div>
+  {% endfor %}
+</div>
+
+<h2>Teams</h2>
+<form method="get" class="filters">
+  <input type="hidden" name="sort" value="{{ sort }}">
+  <label>Attack
+    <select name="attack">
+      <option value="">All</option>
+      {% for o in options.attack %}<option value="{{ o }}" {% if o == selected.attack %}selected{% endif %}>{{ o }}</option>{% endfor %}
+    </select>
+  </label>
+  <label>Defence
+    <select name="defence">
+      <option value="">All</option>
+      {% for o in options.defence %}<option value="{{ o }}" {% if o == selected.defence %}selected{% endif %}>{{ o }}</option>{% endfor %}
+    </select>
+  </label>
+  <label>Midfield
+    <select name="midfield">
+      <option value="">All</option>
+      {% for o in options.midfield %}<option value="{{ o }}" {% if o == selected.midfield %}selected{% endif %}>{{ o }}</option>{% endfor %}
+    </select>
+  </label>
+  <button type="submit">Filter</button>
+  <a href="?sort={{ sort }}">Clear</a>
+</form>
+
+<table>
+  <thead>
+    <tr>
+      <th><a href="?{{ base_qs }}&sort=name">Team</a></th>
+      <th><a href="?{{ base_qs }}&sort=level">Club level</a></th>
+      <th><a href="?{{ base_qs }}&sort=attack">Attack</a></th>
+      <th><a href="?{{ base_qs }}&sort=defence">Defence</a></th>
+      <th><a href="?{{ base_qs }}&sort=midfield">Midfield</a></th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for t in teams %}
+    <tr>
+      <td><a href="{% url 'team_report' t.pk %}">{{ t.name }}</a></td>
+      <td>{{ t.strength|floatformat:0 }}</td>
+      <td>{{ t.attack_label }}</td>
+      <td>{{ t.defence_label }}</td>
+      <td>{{ t.midfield_label }}</td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="5">No teams match these filters.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}
