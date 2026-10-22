@@ -17,7 +17,7 @@ Manchester United score in the top quarter of the 96 teams for goals per match (
 ![Example team report](images/screenshot1.png)
 
 ## Data
-Player stats from this Kaggle dataset: [https://www.kaggle.com/datasets/hubertsidorowicz/football-players-stats-2025-2026].
+Player stats from the [Football Players Stats 2025-2026](https://www.kaggle.com/datasets/hubertsidorowicz/football-players-stats-2025-2026) dataset on Kaggle.
 
 The CSV is not included in this repository. Download it from Kaggle and place it in the project folder as `players_data-2025_2026.csv`.
 
@@ -26,6 +26,16 @@ The CSV is not included in this repository. Download it from Kaggle and place it
 2. Open `explore.ipynb` in VS Code or Jupyter
 3. Run all cells from the top
 4. Try `team_report("Manchester Utd", max_gap=40)` with any team name
+
+## Web app
+The `webapp/` folder holds a Django version of the tool. It has pages for leagues, teams, players, and team reports, so you can browse the same diagnoses and recommendations in the browser instead of the notebook.
+
+To run it (after downloading the CSV as described above):
+1. `cd webapp`
+2. `python manage.py migrate`
+3. `python manage.py import_stats`
+4. `python manage.py runserver`
+5. Open http://127.0.0.1:8000/ in your browser
 
 ## Limitations
 - The dataset has no expected-goals (xG), passing, possession or pressing stats, so the tool cannot tell bad finishing from low-quality shots, or judge passing and build-up play.
@@ -36,7 +46,5 @@ The CSV is not included in this repository. Download it from Kaggle and place it
 - Club level (goal difference per match) is only a rough stand-in for whether a move is realistic. Player scores are also not adjusted for the quality of the team around them or the strength of the league.
 
 ## Planned
-- Add a midfield diagnosis
 - Explore an extra data source for xG and xA, if its terms allow
-- Web dashboard built with Django
 - Refresh the data automatically during the season
