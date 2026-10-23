@@ -62,3 +62,5 @@ MIDFIELD_LABEL_TO_ROLES = {
 }
 
 STAT_LABELS["FoulsDrawn"] = "Fouls drawn"
+
+UNDERPERFORMER_BELOW = 40  # players scoring below this are listed as lowest-rated

@@ -14,6 +14,28 @@
   {% endfor %}
 </div>
 
+<h2>Lowest-rated players</h2>
+{% if weak_players %}
+<table>
+  <thead>
+    <tr><th>Player</th><th>Role</th><th>Minutes</th><th>Score</th></tr>
+  </thead>
+  <tbody>
+    {% for p in weak_players %}
+    <tr>
+      <td><a href="{% url 'player_detail' p.pk %}">{{ p.name }}</a></td>
+      <td>{{ p.role }}</td>
+      <td>{{ p.minutes }}</td>
+      <td>{{ p.score|floatformat:1 }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<p>No player on this team scores below 40, so nobody is flagged.</p>
+{% endif %}
+<p class="muted">Lowest-rated by this tool's stats, not necessarily the weakest players. The score only covers a few stats (for example tackles and interceptions for defenders), which also reflect a team's style.</p>
+
 <h2>Strengths and weaknesses</h2>
 <table>
   <thead>

@@ -62,6 +62,10 @@ def team_report(request, pk):
         })
     rows.sort(key=lambda r: r["percentile"], reverse=True)
 
+    weak_players = list(
+        team.players.filter(score__lt=config.UNDERPERFORMER_BELOW).order_by("score")[:5]
+    )
+
     max_age = _int_param(request, "max_age", 27)
     max_gap = _int_param(request, "max_gap", 40)
     max_club_gap = _int_param(request, "max_club_gap", 20)
@@ -78,12 +82,14 @@ def team_report(request, pk):
         "club_level": round(team.strength),
         "explanations": explanations,
         "rows": rows,
+        "weak_players": weak_players,
         "suggestions": suggestions,
         "max_age": max_age,
         "max_gap": max_gap,
         "max_club_gap": max_club_gap,
     }
     return render(request, "analytics/team_report.html", context)
+
 
 SORT_FIELDS = {
     "name": "name",
@@ -148,6 +154,7 @@ def league_detail(request, slug):
         "base_qs": keep.urlencode(),
     }
     return render(request, "analytics/league_detail.html", context)
+
 
 ROLE_ORDER = ["Goalkeeper", "Defender", "Midfielder", "Attacking Midfielder", "Forward"]
 
